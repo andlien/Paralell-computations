@@ -1,0 +1,8 @@
+//
+// Created by Anders on 31.08.2015.
+//
+
+#ifndef PARALELL_COMPUTATIONS_MAIN_H
+#define PARALELL_COMPUTATIONS_MAIN_H
+
+#endif //PARALELL_COMPUTATIONS_MAIN_H
