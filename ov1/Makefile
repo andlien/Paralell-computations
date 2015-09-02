@@ -1,0 +1,23 @@
+.PHONY: clean all
+
+START:=2
+STOP:=15873
+PROCESSES:= 8
+
+all: run_serial run_parallel
+
+serial: computeSerial.c
+	gcc -o $@ computeSerial.c -std=c99 -lm -O2
+
+run_serial: serial
+	./serial $(START) $(STOP)
+
+parallel: computeMPI.c
+	mpicc -o $@ computeMPI.c -std=c99 -lm -O2
+
+run_parallel: parallel
+	mpirun -n $(PROCESSES) ./parallel $(START) $(STOP)
+
+clean:
+	rm -f serial
+	rm -f parallel
