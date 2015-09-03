@@ -45,4 +45,4 @@ module load mpt
  
 cd $PBS_O_WORKDIR
  
-mpiexec_mpt ./paralell -np 8 2 1000000000 
+mpiexec_mpt ./paralell -np 32 2 1000000000 
