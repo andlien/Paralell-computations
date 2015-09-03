@@ -4,7 +4,7 @@ START:=2
 STOP:=100
 PROCESSES:= 8
 
-all: serial parallel
+all: run_serial run_parallel
 
 serial: computeSerial.c
 	gcc -o $@ computeSerial.c -std=c99 -lm -O2

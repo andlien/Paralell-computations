@@ -56,7 +56,7 @@ start is 2 or greater, and end is greater than start.\n");
              sum = sum + number;
          }
          printf("%f\n", sum);
-         printf("%f\n", MPI_Wtime() - time);
+         //printf("%f\n", MPI_Wtime() - time);
      } else if (size != 1) {
          int interval = (int) ceil((double)(stop - start) / (double)(size - 1));
          int end = start + interval * rank;
@@ -78,7 +78,7 @@ start is 2 or greater, and end is greater than start.\n");
              sum += 1.0/log(i);
          }
          printf("%f\n", sum);
-         printf("%f\n", MPI_Wtime() - time);
+         //printf("%f\n", MPI_Wtime() - time);
      }
 
     MPI_Finalize();
