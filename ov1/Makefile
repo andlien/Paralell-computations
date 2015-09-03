@@ -1,7 +1,7 @@
 .PHONY: clean all
 
 START:=2
-STOP:=15873
+STOP:=100
 PROCESSES:= 8
 
 all: serial parallel

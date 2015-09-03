@@ -54,6 +54,7 @@ start is 2 or greater, and end is greater than start.\n");
              sum = sum + number;
          }
          printf("%f\n", sum);
+         printf("%f\n", MPI_Wtime());
      } else {
          int interval = (int) ceil((double)(stop - start) / (double)(size - 1));
          int end = start + interval * rank;
