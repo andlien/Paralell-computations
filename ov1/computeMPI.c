@@ -53,24 +53,21 @@ start is 2 or greater, and end is greater than start.\n");
              MPI_Recv(&number, 1, MPI_DOUBLE, MPI_ANY_SOURCE, 99, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
              sum = sum + number;
          }
-         printf("The sum is: %f\n", sum);
+         printf("%f\n", sum);
      } else {
          int interval = (int) ceil((double)(stop - start) / (double)(size - 1));
-         //printf("intervall: %d\n", interval);
+         int end = start + interval * rank;
 
          if (rank == size - 1) {
-             for (int i = start + interval * (rank - 1); i < stop; ++i) {
-                 //printf("i: %d\n", i);
-                 sum += 1.0/log(i);
-                 //printf("new sum: %f\n", sum);
-             }
-         } else {
-             for (int i = start + interval * (rank - 1); i < start + interval * rank; i++) {
-                 //printf("i: %d\n", i);
-                 sum += 1.0/log(i);
-                 //printf("new sum: %f\n", sum);
-             }
+             end = stop;
          }
+
+         for (int i = start + interval * (rank - 1); i < end; i++) {
+             //printf("i: %d\n", i);
+             sum += 1.0/log(i);
+             //printf("new sum: %f\n", sum);
+         }
+
 
          MPI_Send(&sum, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
      }
