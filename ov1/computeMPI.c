@@ -49,7 +49,7 @@ start is 2 or greater, and end is greater than start.\n");
 	// Perform the computation
     double sum = 0.0;
 
-     if (rank == 0) {
+     if (rank == 0 && size != 1) {
          for (int i = 0; i < fmin(size-1, stop - start); ++i) {
              double number;
              MPI_Recv(&number, 1, MPI_DOUBLE, MPI_ANY_SOURCE, 99, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -57,7 +57,7 @@ start is 2 or greater, and end is greater than start.\n");
          }
          printf("%f\n", sum);
          printf("%f\n", MPI_Wtime() - time);
-     } else {
+     } else if (size != 1) {
          int interval = (int) ceil((double)(stop - start) / (double)(size - 1));
          int end = start + interval * rank;
 
@@ -73,6 +73,12 @@ start is 2 or greater, and end is greater than start.\n");
 
 
          MPI_Send(&sum, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
+     } else {
+         for (int i = start; i < stop; ++i) {
+             sum = sum + number;
+         }
+         printf("%f\n", sum);
+         printf("%f\n", MPI_Wtime() - time);
      }
 
     MPI_Finalize();

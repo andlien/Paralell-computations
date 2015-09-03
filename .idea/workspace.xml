@@ -37,8 +37,8 @@
       <file leaf-file-name="computeMPI.c" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ov1/computeMPI.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.39729118">
-              <caret line="58" column="42" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.5530474">
+              <caret line="76" column="45" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -454,8 +454,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ov1/computeMPI.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39729118">
-          <caret line="58" column="42" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.5530474">
+          <caret line="76" column="45" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
           <folding />
         </state>
       </provider>
