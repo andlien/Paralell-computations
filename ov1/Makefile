@@ -16,7 +16,7 @@ parallel: computeMPI.c
 	mpicc -o $@ computeMPI.c -std=c99 -lm -O2
 
 run_parallel: parallel
-	mpirun -n $(PROCESSES) ./parallel $(START) $(STOP)
+	mpirun -np $(PROCESSES) ./parallel $(START) $(STOP)
 
 clean:
 	rm -f serial
