@@ -75,7 +75,7 @@ start is 2 or greater, and end is greater than start.\n");
          MPI_Send(&sum, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
      } else {
          for (int i = start; i < stop; ++i) {
-             sum = sum + number;
+             sum = sum + i;
          }
          printf("%f\n", sum);
          printf("%f\n", MPI_Wtime() - time);
