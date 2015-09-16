@@ -1,8 +1,8 @@
 .PHONY: clean all
 
-START:=2
-STOP:=100
-PROCESSES:= 8
+START:=7
+STOP:=41
+PROCESSES:= 11
 
 all: run_serial run_parallel
 
