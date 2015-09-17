@@ -28,8 +28,6 @@ int main(int argc, char ** argv)
   size_t pngsize;
   unsigned char *png;
   const char * filename = "lenna512x512_inv.png";
-  clock_t start, end, start_to, start_from, end_to, end_from;
-  double total_rt, to_device_rt, from_device_rt;
 
   /* Read in the image */
   lodepng_load_file(&png, &pngsize, filename);
@@ -46,8 +44,6 @@ int main(int argc, char ** argv)
     std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
   }
 
-  start = clock();
-
   //float *h_x, *d_x; // h=host, d=device
   unsigned int n_blocks = 1<<5,
       n_threads_per_block = 1<<9, // 2^3 = 8
@@ -57,34 +53,13 @@ int main(int argc, char ** argv)
 
   cudaMalloc((void **) &d_image, size*sizeof(unsigned char));
 
-  start_to = clock();
-  
   cudaMemcpy(d_image, h_image, size*sizeof(unsigned char), cudaMemcpyHostToDevice);
-
-  end_to = clock();
 
   // Kernel invocation
   invertPicture<<<n_blocks, n_threads_per_block>>>(d_image, size, offset);
-  //cudaThreadSynchronize();  // Wait for invertPicture to finish on CUDA
-
-  start_from = clock();
+  cudaThreadSynchronize();  // Wait for invertPicture to finish on CUDA
 
   cudaMemcpy(h_image, d_image, size*sizeof(unsigned char), cudaMemcpyDeviceToHost);
-
-  end_from = clock();
-  end = clock();
-
-  to_device_rt = (end_to-start_to)/(double)CLOCKS_PER_SEC;
-  from_device_rt = (end_from-start_from)/(double)CLOCKS_PER_SEC;
-  total_rt = (end-start)/(double)CLOCKS_PER_SEC;
-
-  printf( "Transfer to device: %f\n",  to_device_rt);
-  printf( "Transfer from device: %f\n", from_device_rt);
-  printf( "Total program run-time: %f\n", total_rt);
-
-  printf( "Percentage, to device: %f\n", to_device_rt/total_rt);
-  printf( "Percentage, from device: %f\n", from_device_rt/total_rt);
-  printf( "Percentage, total: %f\n", (to_device_rt + from_device_rt)/total_rt);
 
   /* Save the result to a new .png file */
   lodepng_encode24_file("lenna512x512_orig.png", h_image, width, height);
