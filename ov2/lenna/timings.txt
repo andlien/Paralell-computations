@@ -1,0 +1,7 @@
+Transfer to device: 0.000117
+Transfer from device: 0.000557
+Total program run-time: 0.060780
+Percentage, to device: 0.001925
+Percentage, from device: 0.009164
+Percentage, total: 0.011089
+
