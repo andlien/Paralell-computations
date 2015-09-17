@@ -1,0 +1,12 @@
+tot_gpu = 35n * log2(n) + 2n/r + 5n/r
+tot_cpu = 3500n * log2(n)
+
+35n * log2(n) + 7n/r = 3500n * log2(n)
+
+3465n log2(n) = 7n/r
+
+log2(n)  = (7n/r) / 3465n
+
+log2(n) = (7/3465r)
+
+n = 2^(7/3465r)
