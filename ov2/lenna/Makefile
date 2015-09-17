@@ -18,8 +18,9 @@ lodepng.c.o: lodepng.c
 lodepng.cpp.o: lodepng.cpp
 	$(CXX) -c $< -o $@
 
+cuda: gpu_version
+
 all: cpu_version gpu_version
 
-clean: 
+clean:
 	rm -f *.o gpu_version cpu_version lenna512x512_orig.png
-
