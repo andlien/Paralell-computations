@@ -8,9 +8,9 @@
 void reverse(char *string)
 {
 	// Make buffer
-	unsigned char *mem = malloc(10);
-	int i, lastChar;
-	
+	char *mem = malloc(10);
+	int i, lastChar = -1;
+
 	strcpy(mem, string);
 	// Search for the first non null char
 	for(i = 10; i >= 0; i--)
@@ -23,21 +23,19 @@ void reverse(char *string)
 			break;
 		}
 	}
-	
+
 	// Swap lower case <-> capital letters
 	for(i = 0; i <= lastChar; i++)
 	{
-		// Handle lower case
 		if(mem[i] >= 'a') {
+			// Handle lower case
 			mem[i] -= 'a' - 'A';
-		} else {
+		} else if (mem[i] >= 'A') {
 			// Handle upper case
-			if(mem[i] >= 'A') {
-				mem[i] += 'a' - 'A';
-			}
+			mem[i] += 'a' - 'A';
 		}
 	}
-	
+
 	// Print starting with the last character.
 	for(i = lastChar; i >= 0; i--)
 		printf("%c", mem[i]);
