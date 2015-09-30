@@ -40,7 +40,7 @@ PPMImage *readStreamPPM(FILE *fp) {
 	//check for comments
 	c = getc(fp);
 	while (c == '#') {
-	while (getc(fp) != '\n')
+	while (getc(fp) != '\n') ;
 		 c = getc(fp);
 	}
 
@@ -63,9 +63,9 @@ PPMImage *readStreamPPM(FILE *fp) {
 		exit(1);
 	}
 
-	while (fgetc(fp) != '\n')
-        //memory allocation for pixel data
-        image->data = (PPMPixel*)malloc(image->x * image->y * sizeof(PPMPixel));
+	while (fgetc(fp) != '\n') ;
+	//memory allocation for pixel data
+	image->data = (PPMPixel*)malloc(image->x * image->y * sizeof(PPMPixel));
 
 	if (!image) {
 		fprintf(stderr, "Unable to allocate memory\n");
@@ -116,7 +116,7 @@ PPMImage *readPPM(const char *filename)
     //check for comments
     c = getc(fp);
     while (c == '#') {
-    while (getc(fp) != '\n')
+    while (getc(fp) != '\n') ;
          c = getc(fp);
     }
 
@@ -139,9 +139,9 @@ PPMImage *readPPM(const char *filename)
          exit(1);
     }
 
-    while (fgetc(fp) != '\n')
-        //memory allocation for pixel data
-        img->data = (PPMPixel*)malloc(img->x * img->y * sizeof(PPMPixel));
+    while (fgetc(fp) != '\n') ;
+    //memory allocation for pixel data
+    img->data = (PPMPixel*)malloc(img->x * img->y * sizeof(PPMPixel));
 
     if (!img) {
          fprintf(stderr, "Unable to allocate memory\n");

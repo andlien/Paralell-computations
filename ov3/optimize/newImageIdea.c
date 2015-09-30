@@ -113,10 +113,52 @@ PPMImage * performNewIdeaFinalization(AccurateImage *imageInSmall, AccurateImage
 	imageOut->y = imageInSmall->y;
 
 	for(int i = 0; i < imageInSmall->x * imageInSmall->y; i++) {
-		performColorSave(imageInSmall->data[i].red,imageInLarge->data[i].red, imageOut->data[i].red);
-		performColorSave(imageInSmall->data[i].green,imageInLarge->data[i].green, imageOut->data[i].green);
-		performColorSave(imageInSmall->data[i].blue,imageInLarge->data[i].blue, imageOut->data[i].blue);
+		double value = (imageInLarge->data[i].red - imageInSmall->data[i].red);
+		if(value > 255)
+			imageOut->data[i].red = 255;
+		else if (value < -1.0) {
+			value = 257.0+value;
+			if(value > 255)
+				imageOut->data[i].red = 255;
+			else
+				imageOut->data[i].red = floor(value);
+		} else if (value > -1.0 && value < 0.0) {
+			imageOut->data[i].red = 0;
+		} else {
+			imageOut->data[i].red = floor(value);
+		}
+
+		value = (imageInLarge->data[i].green - imageInSmall->data[i].green);
+		if(value > 255)
+			imageOut->data[i].green = 255;
+		else if (value < -1.0) {
+			value = 257.0+value;
+			if(value > 255)
+				imageOut->data[i].green = 255;
+			else
+				imageOut->data[i].green = floor(value);
+		} else if (value > -1.0 && value < 0.0) {
+			imageOut->data[i].green = 0;
+		} else {
+			imageOut->data[i].green = floor(value);
+		}
+
+		value = (imageInLarge->data[i].blue - imageInSmall->data[i].blue);
+		if(value > 255)
+			imageOut->data[i].blue = 255;
+		else if (value < -1.0) {
+			value = 257.0+value;
+			if(value > 255)
+				imageOut->data[i].blue = 255;
+			else
+				imageOut->data[i].blue = floor(value);
+		} else if (value > -1.0 && value < 0.0) {
+			imageOut->data[i].blue = 0;
+		} else {
+			imageOut->data[i].blue = floor(value);
+		}
 	}
+
 
 	return imageOut;
 }
@@ -125,7 +167,11 @@ PPMImage * performNewIdeaFinalization(AccurateImage *imageInSmall, AccurateImage
 int main(int argc, char** argv) {
 
 	PPMImage *image;
-	image = readPPM("flower.ppm");
+	if(argc > 1) {
+		image = readPPM("flower.ppm");
+	} else {
+		image = readStreamPPM(stdin);
+	}
 
 	AccurateImage *imageAccurate1_tiny = convertImageToNewFormat(image);
 	AccurateImage *imageAccurate2_tiny = convertImageToNewFormat(image);
