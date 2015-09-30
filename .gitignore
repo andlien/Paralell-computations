@@ -33,3 +33,10 @@
 
 # MAC shit
 *.DS_Store
+
+# Archives
+*.zip
+
+# CLion
+*.xml
+*.iml
