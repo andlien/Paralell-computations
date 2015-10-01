@@ -176,8 +176,6 @@ int main(int argc, char** argv) {
 	AccurateImage *imageAccurate1_tiny = convertImageToNewFormat(image);
 	AccurateImage *imageAccurate2_tiny = convertImageToNewFormat(image);
 
-	free(image);
-
 	// Process the tiny case:
 	int size_tiny = 2;
 	performNewIdeaIteration(imageAccurate2_tiny, imageAccurate1_tiny, size_tiny);
@@ -225,11 +223,6 @@ int main(int argc, char** argv) {
 	PPMImage *final_small = performNewIdeaFinalization(imageAccurate2_small,  imageAccurate2_medium);
 	PPMImage *final_medium = performNewIdeaFinalization(imageAccurate2_medium,  imageAccurate2_large);
 
-	free(imageAccurate2_tiny);
-	free(imageAccurate2_small);
-	free(imageAccurate2_medium);
-	free(imageAccurate2_large);
-
 	if(argc > 1) {
 		writePPM("flower_tiny.ppm", final_tiny);
 		writePPM("flower_small.ppm", final_small);
@@ -239,10 +232,6 @@ int main(int argc, char** argv) {
 		writeStreamPPM(stdout, final_small);
 		writeStreamPPM(stdout, final_medium);
 	}
-
-	free(final_tiny);
-	free(final_small);
-	free(final_medium);
 
 	return 0;
 }
