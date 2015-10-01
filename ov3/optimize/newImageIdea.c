@@ -46,7 +46,6 @@ AccurateImage *performNewIdea(PPMImage *image, int size)
 	{
 		tempOut = (i % 2 == 0 ? imageOut : imageIn);
 		tempIn = (i % 2 == 0 ? imageIn : imageOut);
-		int count = 0;
 
 		for (centerX = 0; centerX < imageInX; centerX++)
 		{
@@ -70,7 +69,6 @@ AccurateImage *performNewIdea(PPMImage *image, int size)
 						redSum += tempIn->data[offsetOfThePixel].red;
 						greenSum += tempIn->data[offsetOfThePixel].green;
 						blueSum += tempIn->data[offsetOfThePixel].blue;
-						count++;
 						countIncluded++;
 					}
 
@@ -82,7 +80,6 @@ AccurateImage *performNewIdea(PPMImage *image, int size)
 				tempOut->data[offsetOfThePixel].blue = blueSum / countIncluded;
 			}
 		}
-		printf("Size: %d, Count: %d\n", size, count);
 	}
 	return imageOut;
 }
@@ -106,13 +103,13 @@ double performColorSave(double imageInLargeData, double imageInSmallData)
 
 PPMImage * performNewIdeaFinalization(AccurateImage *imageInSmall, AccurateImage *imageInLarge)
 {
+	int i, size = imageInSmall->x * imageInSmall->y;
+
 	PPMImage *imageOut;
 	imageOut = (PPMImage *)malloc(sizeof(PPMImage));
-	imageOut->data = (PPMPixel*)malloc(imageInSmall->x * imageInSmall->y * sizeof(PPMPixel));
+	imageOut->data = (PPMPixel*)malloc(size * sizeof(PPMPixel));
 	imageOut->x = imageInSmall->x;
 	imageOut->y = imageInSmall->y;
-
-	int i, size = imageInSmall->x * imageInSmall->y;
 
 	for(i = 0; i < size; i++)
 	{
