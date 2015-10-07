@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <tgmath.h>
 
+#include "cl_error_helper.h"
 #include "lodepng.h"
 
 
@@ -112,6 +113,16 @@ void printCircles(struct CircleInfo ci[], cl_int circles)
 	}
 }
 
+int printPossibleError(char tag, int error_code)
+{
+	printf("Tag %c with cl code %c", tag, getErrorString(error_code));
+
+	if (error_code != CL_SUCCESS) {
+		return 1;
+	}
+	return 0;
+}
+
 
 int main()
 {
@@ -150,29 +161,131 @@ int main()
 		/*Read in the line or circle here*/
 	}
 
-	// Build OpenCL program (more is needed, before and after the below code)
-	char * source = readText("kernel.cl");
-	cl_context context;
-	cl_int error_cl;
-	cl_program program = clCreateProgramWithSource(
-		context,
-		1,
-		(const char **) &source,
-		NULL,
-		&error_cl
-	);
+	/*** START EXAMPLE PROGRAM ***/
 
-	// Check if OpenCL function invocation failed/succeeded
-	if (!context) {
-		printf("Error, failed to create program. \n");
+	cl_context context;
+	cl_context_properties properties[3];
+	cl_kernel kernel;
+	cl_command_queue command_queue;
+	cl_program program;
+	cl_int err;
+	cl_uint num_of_platforms=0;
+	cl_platform_id platform_id;
+	cl_device_id device_id;
+	cl_uint num_of_devices=0;
+	cl_mem input, output;
+	size_t global;
+
+	float inputData[DATA_SIZE]={1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	float results[DATA_SIZE]={0};
+
+	int i, cl_code;
+
+	// retreives a list of platforms available
+	cl_code = clGetPlatformIDs(1, &platform_id, &num_of_platforms);
+	if (printPossibleError("clGetPlatformIDs", cl_code))
 		return 1;
+
+	// try to get a supported GPU device
+	cl_code = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, &num_of_devices);
+	if (printPossibleError("clGetDeviceIDs", cl_code))
+		return 1;
+
+	// context properties list - must be terminated with 0
+	properties[0]= CL_CONTEXT_PLATFORM;
+	properties[1]= (cl_context_properties) platform_id;
+	properties[2]= 0;
+
+	// create a context with the GPU device
+	context = clCreateContext(properties, 1, &device_id, NULL, NULL, &err);
+	if (printPossibleError("clCreateContext", err))
+		return 1;
+
+	// create command queue using the context and device
+	command_queue = clCreateCommandQueue(context, device_id, 0, &err);
+	if (printPossibleError("clCreateCommandQueue", err))
+		return 1;
+
+	// create a program from the kernel source code
+	char *source = readText("kernel.cl");
+	program = clCreateProgramWithSource(context, 1, (const char **) &source, NULL, &err);
+	if (printPossibleError("clCreateProgramWithSource", err))
+		return 1;
+
+	// compile the program
+	cl_code = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+	if (printPossibleError("clBuildProgram", cl_code))
+		return 1;
+
+	// specify which kernel from the program to execute
+	kernel = clCreateKernel(program, "hello", &err);
+	if (printPossibleError("clCreateKernel", err))
+		return 1;
+
+	// create buffers for the input and ouput
+	input = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float) *DATA_SIZE, NULL, &err);
+	if (printPossibleError("clCreateBuffer:CL_MEM_READ_ONLY", err))
+		return 1;
+	output = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) *DATA_SIZE, NULL, &err);
+	if (printPossibleError("clCreateBuffer:CL_MEM_WRITE_ONLY", err))
+		return 1;
+
+	// load data into the input buffer
+	cl_code = clEnqueueWriteBuffer(command_queue, input, CL_TRUE, 0, sizeof(float) *DATA_SIZE, inputData, 0, NULL, NULL);
+	if (printPossibleError("clEnqueueWriteBuffer", cl_code))
+		return 1;
+
+	// set the argument list for the kernel command
+	cl_code = clSetKernelArg(kernel, 0, sizeof(cl_mem), &input);
+	if (printPossibleError("clSetKernelArg:0", cl_code))
+		return 1;
+	cl_code = clSetKernelArg(kernel, 1, sizeof(cl_mem), &output);
+	if (printPossibleError("clSetKernelArg:1", cl_code))
+		return 1;
+
+	global=DATA_SIZE;
+
+	// enqueue the kernel command for execution
+	cl_code = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global, NULL, 0, NULL, NULL);
+	if (printPossibleError("clEnqueueNDRangeKernel", cl_code))
+		return 1;
+	cl_code = clFinish(command_queue);
+	if (printPossibleError("clFinish", cl_code))
+		return 1;
+
+	// copy the results from out of the output buffer
+	cl_code = clEnqueueReadBuffer(command_queue, output, CL_TRUE, 0, sizeof(float) * DATA_SIZE, results, 0, NULL, NULL);
+	if (printPossibleError("clEnqueueReadBuffer", cl_code))
+		return 1;
+
+	// print the results
+	printf("output: ");
+	for(i = 0; i < DATA_SIZE; i++)
+	{
+		printf("%f ",results[i]);
 	}
 
-	// Remember that more is needed before OpenCL can create kernel
+	// cleanup - release OpenCL resources
+	cl_code = clReleaseMemObject(input);
+	if (printPossibleError("clReleaseMemObject", cl_code))
+		return 1;
+	cl_code = clReleaseMemObject(output);
+	if (printPossibleError("clReleaseMemObject", cl_code))
+		return 1;
+	cl_code = clReleaseProgram(program);
+	if (printPossibleError("clReleaseProgram", cl_code))
+		return 1;
+	cl_code = clReleaseKernel(kernel);
+	if (printPossibleError("clReleaseKernel", cl_code))
+		return 1;
+	cl_code = clReleaseCommandQueue(command_queue);
+	if (printPossibleError("clReleaseCommandQueue", cl_code))
+		return 1;
+	cl_code = clReleaseContext(context);
+	if (printPossibleError("clReleaseContext", cl_code))
+		return 1;
 
-	// Create Kernel / transfer data to device
-
-	// Execute Kernel / transfer result back from device
+	/*** END EXAMPLE PROGRAM ***/
 
 	size_t memfile_length = 0;
 	unsigned char * memfile = NULL;

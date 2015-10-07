@@ -1,0 +1,1 @@
+const char *getErrorString(cl_int error);
