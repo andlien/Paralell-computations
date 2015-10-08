@@ -1,4 +1,5 @@
 #include <CL/opencl.h>
+// Mac: OpenCL/opencl.h, Linux: CL/opencl.h
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -7,6 +8,7 @@
 #include "cl_error_helper.h"
 #include "lodepng.h"
 
+#define DATA_SIZE 10
 
 struct Color
 {
@@ -30,7 +32,7 @@ struct LineInfo
 	struct Color color;
 };
 
-char * readText( const char * filename)
+char *readText(const char *filename)
 {
 	FILE * file = fopen(filename, "r");
 	fseek(file, 0, SEEK_END);
@@ -69,7 +71,7 @@ void parseCircle(char *line, struct CircleInfo ci[], cl_int *circles)
 {
 	float x, y, radius;
 	struct Color c;
-	int items = sscanf(line, "circle %f,%f %f %f,%f", &x,&y,&radius, &c.angle, &c.intensity);
+	int items = sscanf(line, "circle %f,%f %f %f,%f", &x, &y, &radius, &c.angle, &c.intensity);
 	if (items == 5)
 	{
 		ci[*circles].x = x;
@@ -113,9 +115,9 @@ void printCircles(struct CircleInfo ci[], cl_int circles)
 	}
 }
 
-int printPossibleError(char tag, int error_code)
+int printPossibleError(char *tag, int error_code)
 {
-	printf("Tag %c with cl code %c", tag, getErrorString(error_code));
+	printf("Tag %s with cl code %s", tag, getErrorString(error_code));
 
 	if (error_code != CL_SUCCESS) {
 		return 1;
@@ -160,6 +162,8 @@ int main()
 		ssize_t read = getline(&instructions[i], &instructionLengths[i], stdin);
 		/*Read in the line or circle here*/
 	}
+
+	unsigned char *image;
 
 	/*** START EXAMPLE PROGRAM ***/
 
@@ -243,7 +247,7 @@ int main()
 	if (printPossibleError("clSetKernelArg:1", cl_code))
 		return 1;
 
-	global=DATA_SIZE;
+	global = DATA_SIZE;
 
 	// enqueue the kernel command for execution
 	cl_code = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global, NULL, 0, NULL, NULL);
@@ -292,7 +296,7 @@ int main()
 	lodepng_encode24(
 		&memfile,
 		&memfile_length,
-		/* Here's where your finished image should be put as parameter*/,
+		image,
 		width,
 		height);
 

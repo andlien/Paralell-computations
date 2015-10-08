@@ -65,3 +65,9 @@ float __OVERLOADABLE__ dot()*/
 float dot( struct vec3 a , struct vec3 b ){
 	return a.x*b.x+ a.y*b.y+ a.z*b.z;
 }
+
+kernel void hello(__global float *input, __global float *output)
+{
+	size_t id = get_global_id(0);
+	output[id] = input[id] * input[id];
+};

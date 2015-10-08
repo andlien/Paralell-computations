@@ -2,6 +2,7 @@
 
 CC:=clang
 libs:=-lOpenCL -lm
+libs_mac:=-framework OpenCL -lm
 CFLAGS:=--std=c99 -O2
 
 image.png: program
