@@ -1,5 +1,4 @@
 #include <CL/opencl.h>
-// Mac: OpenCL/opencl.h, Linux: CL/opencl.h
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -9,6 +8,8 @@
 #include "lodepng.h"
 
 #define DATA_SIZE 10
+
+// Mac: OpenCL/opencl.h, Linux: CL/opencl.h
 
 struct Color
 {
@@ -128,7 +129,7 @@ int printPossibleError(char *tag, int error_code)
 
 int main()
 {
-	// Parse input
+	/*// Parse input
 	int numberOfInstructions;
 	char* *instructions = NULL;
 	size_t *instructionLengths;
@@ -160,10 +161,10 @@ int main()
 	for (int i = 0; i < numberOfInstructions; i++)
 	{
 		ssize_t read = getline(&instructions[i], &instructionLengths[i], stdin);
-		/*Read in the line or circle here*/
+		*//*Read in the line or circle here*//*
 	}
 
-	unsigned char *image;
+	unsigned char *image;*/
 
 	/*** START EXAMPLE PROGRAM ***/
 
@@ -247,7 +248,7 @@ int main()
 	if (printPossibleError("clSetKernelArg:1", cl_code))
 		return 1;
 
-	global = DATA_SIZE;
+	global=DATA_SIZE;
 
 	// enqueue the kernel command for execution
 	cl_code = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global, NULL, 0, NULL, NULL);
@@ -291,7 +292,7 @@ int main()
 
 	/*** END EXAMPLE PROGRAM ***/
 
-	size_t memfile_length = 0;
+	/*size_t memfile_length = 0;
 	unsigned char * memfile = NULL;
 	lodepng_encode24(
 		&memfile,
@@ -302,7 +303,7 @@ int main()
 
 	// KEEP THIS LINE. Or make damn sure you replace it with something equivalent.
 	// This "prints" your png to stdout, permitting I/O redirection
-	fwrite(memfile, sizeof(unsigned char), memfile_length, stdout);
+	fwrite(memfile, sizeof(unsigned char), memfile_length, stdout);*/
 
 	return 0;
 }
